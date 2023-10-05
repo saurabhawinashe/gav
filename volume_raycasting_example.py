@@ -24,7 +24,51 @@ except ImportError as e:
 def load_transferfunction(filename):
     with open(filename,'rb') as fid:
         data = np.fromfile(fid, count=-1,dtype=np.ubyte)
+        
+    #for i in range(3, 1024, 4):
+    #	data[i] = 255
+    
+    #for i in range(87*4):
+    #	data[i] = 0
+    for i in range(1024):
+    	data[i] = 0
+    	
+    """for i in range(30*4, 160*4, 4):
+    	data[i] = 255
+    	data[i+1] = 0
+    	data[i+2] = 0
+    	data[i+3] = 3
+    	
+    for i in range(25*4, 70*4, 4):
+    	data[i] = 0
+    	data[i+1] = 255
+    	data[i+2] = 0
+    	data[i+3] = 10"""
+    	
+    for i in range(0*4, 40*4, 4):
+    	data[i] = 255
+    	data[i+1] = 0
+    	data[i+2] = 0
+    	data[i+3] = 200
+    	
+    for i in range(40*4, 120*4, 4):
+    	data[i] = 0
+    	data[i+1] = 0
+    	data[i+2] = 50
+    	data[i+3] = 10
+    	
+    for i in range(190*4, 250*4, 4):
+    	data[i] = 0
+    	data[i+1] = 0
+    	data[i+2] = 120
+    	data[i+3] = 200
+    
+    	
+    for i in range(70*4, 90*4):
+    	data[i] = 0
+    
     return data
+
 
 
 def load_raw(filename, volsize):
@@ -35,14 +79,28 @@ def load_raw(filename, volsize):
 
     arr = list(volsize)
     volume = np.prod(arr[0:dim - 1])
+    
 
     shape = (arr[dim - 1], volume, element_channels)
     with open(filename,'rb') as fid:
         data = np.fromfile(fid, count=np.prod(shape),dtype = np_type)
+    #import pdb;pdb.set_trace()
+    
+    
     data.shape = shape
 
     arr.reverse()
     data = data.reshape(arr)
+    
+    """f = open("data/cluster4.txt", "r")
+    for line in f.readlines():
+    	t = line.split(",")
+    	x = int(t[0])
+    	y = int(t[1].split(" ")[1])
+    	z = int(t[2].split(" ")[1])
+    	data[x-1][y][z] = -1
+    	
+    f.close()"""
     
     return data
 
@@ -402,8 +460,9 @@ class QGLControllerWidget(QtOpenGL.QGLWidget):
 def main():
 
     # assumes unsigned byte datatype and volume dimensions of 256x256x225
-    volsize = (256, 256, 225)
-    volume = load_raw(os.path.join("data", "head256.raw"), volsize)
+    volsize = (103, 94, 161)
+    volume = load_raw(os.path.join("data", "tooth.raw"), volsize)
+    #print(volume)
     tff = load_transferfunction(os.path.join("data", "tff.dat"))
 
     app = QtWidgets.QApplication([])
